@@ -12,12 +12,14 @@ def dominates(s1, s2):
         if s1[i] > s2[i]:
             return False
         
+    # no worse on any objective and not identical, so better on at least one (everything is minimised)
     return s1 != s2
 
 def getFronts(remaining):
     if len(remaining) < 2:
         return [remaining]
     else:
+        # non-dominated sorting, take off the current front then recurse on whatever is left
         front = []
         for i in range(len(remaining)):
             dominated = False
@@ -38,6 +40,8 @@ def assignCrowdingDistances(front, dim):
     for s in front:
         s.crowdingDistance = 0
 
+    # nsga-ii crowding distance, the gap between each solution's neighbours on every objective scaled by that objective's range.
+    # the two ends get inf so they always survive
     for m in range(dim):
         front = sorted(front, key = lambda s : s.objPos(m))
         
@@ -72,6 +76,7 @@ class Population:
             nadir[1] += w2
         return [nadir[0]//2 + epsilon, nadir[1]//2 + epsilon]
 
+    # monte carlo estimate of the hypervolume, sampling points in the box under the ref point (not finished)
     def hvApprox(self):
         front = self.paretoFront()
         refVec = self.findRefVec
@@ -105,6 +110,7 @@ class Population:
     def reproductiveSelection(self):
         matingPool = []
         mpSize = int(self.truncRate * self.popSize)
+        # fill the mating pool a whole front at a time, the front that doesn't fit is cut down by crowding distance
         fronts = getFronts(deepcopy(self.pop))
 
         for i in range(len(fronts)):
@@ -122,6 +128,7 @@ class Population:
     
     def evolutionarySelection(self, combinedPop):
         selected = []
+        # elitist step, parents and offspring compete together for the next generation
         fronts = getFronts(combinedPop)
 
         for i in range(len(fronts)):

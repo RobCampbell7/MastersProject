@@ -30,6 +30,7 @@ def strictlyDominates(s1, s2):
 
     return result
 
+# these return whichever point wins rather than a bool, or () if neither does
 def dominant(s1, s2):
     """
     Return types:

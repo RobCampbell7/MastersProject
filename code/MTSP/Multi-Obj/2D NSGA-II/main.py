@@ -28,6 +28,7 @@ if __name__=="__main__":
         newHV = p.hypervolume()
         print(p.hypervolume())
         # line = ":".join([str(s.objPos()) for s in p.pop])
+        # one line per generation, each solution written as perm-objectives and split by ':'
         objFile.write(":".join([str(s.perm) + "-" + str(s.objPos()) for s in p.pop]) + "\n")
         # objFile.write(":".join([str(s.objPos()) for s in p.pop]) + "\n")
         # if newHV < prevHV:

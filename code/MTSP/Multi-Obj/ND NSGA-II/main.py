@@ -14,6 +14,7 @@ if __name__=="__main__":
     prevPop = deepcopy(p)
     prevHV = 0
     for i in range(iterationNo):
+        # one line per generation, each solution written as perm-objectives and split by ':'
         objFile.write(":".join([str(s.perm) + "-" + str(tuple(s.objPos())) for s in p.pop]) + "\n")
         p.iterate()
 

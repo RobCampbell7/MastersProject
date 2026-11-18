@@ -15,6 +15,7 @@ class Population:
         self.pop = []
         self.keepBest = keepBest
 
+    # longest run of identical solutions once sorted by fitness
     def repeatNo(self):
         self.pop = sorted(self.pop, key = lambda s : s.f)
         current = deepcopy(self.pop[0])

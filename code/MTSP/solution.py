@@ -2,12 +2,14 @@ from copy import deepcopy
 from math import ceil
 import random
 
+# edges are stored once with the smaller city first, so (a, b) and (b, a) hit the same key
 def arrange(a, b):
     if a < b:
         return (a, b)
     else:
         return (b, a)
 
+# fully connected graph with one random weight per edge
 def randTSP(n, lower=0, higher=100):
     d = {}
     for i in range(n):
@@ -37,6 +39,7 @@ def randTSP(n, lower=0, higher=100):
 #     return p2
 
 def crossover(p0, p1):
+    # child takes the first half of p0, the rest follows p1 with any clashes swapped for the cities in s
     s0 = p0[: len(p0) // 2]
     s1 = p1[: len(p0) // 2]
     
@@ -58,6 +61,7 @@ def fitness(p, d):
     try:
         f = fitnessLookup[tuple(p)]
     except KeyError:
+        # city 0 is the fixed start and end so it isn't in the perm
         f = d[0, p[0]] + d[0, p[-1]]
         for i in range(len(p)):
             f += d[arrange(p[i - 1], p[i])]
@@ -73,6 +77,7 @@ def fitness(p, d):
 #     return p1
 
 def mutate(p0):
+    # swaps two pairs of neighbouring cities, j is kept away from i so the pairs don't overlap
     i = random.randint(0, len(p0) - 2)
     j = random.choice([j for j in range(len(p0) - 1) if j < i - 1 or j > i + 1])
     p1 = deepcopy(p0)

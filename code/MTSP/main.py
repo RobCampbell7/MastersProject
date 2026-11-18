@@ -30,6 +30,7 @@ if __name__=="__main__":
         for i in range(iterationNo):
             p.iterate()
             best, f = p.best()
+            # copies of the most common tour, a rough sign of how converged the population is
             rn = repeatCount([s.perm for s in p.pop])
             print("Generation: " + repr(i))
             # print(repr(best) + " : " + repr(f))
@@ -42,6 +43,7 @@ if __name__=="__main__":
 
         p.iterate()
         best, f = p.best()
+    # ctrl+c stops early and still prints the best found so far
     except KeyboardInterrupt:
         if f < bestScore:
             bestEver = best

@@ -21,6 +21,7 @@ graph = randTSP(cityNo, dimensions, lowerWeightBound, upperWeightBound)
 p = Population(cityNo, dimensions, graph, populationSize, mutationRate, truncationRate, iterationNo)
 p.initialise()
 
+# objective vectors of every generation, starting with the random one
 history = []
 history.append([(tuple(s.objPos())) for s in p.pop])
 for i in range(iterationNo):
@@ -47,6 +48,7 @@ paretoData = {
     "maxF" : []
 }
 
+# whole population into simple.csv, then just each generation's front into pareto.csv
 for i in range(len(history)):
     for j in range(len(history[i])):
         data["maxF"].append(1 + max((range(len(history[i][j]))), key = lambda f : history[i][j][f]))
@@ -70,6 +72,7 @@ fig1 = px.scatter_3d(df, x="F1", y="F2", z="Iteration")
 fig1.update_traces(marker_size=2.5, opacity=0.9)
 fig1.update_layout(width=1200, height = 1200)
 print("Figure 1 created")
+# both plots saved from four camera angles (1 to 4), write_image needs kaleido
 fig1.update_layout(scene_camera_eye=dict(x=0.0, y=2.0, z=0.1))
 pio.write_image(fig1, 'simpleImage1.png', scale=5, width=800, height=600)
 print("First image saved")

@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.express as px
 
+# plots a reduced objective file, two components against generation coloured by the largest objective
 df = pd.read_csv("reducedObj.csv")
 # df = pd.DataFrame(data)
 

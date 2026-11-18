@@ -100,6 +100,7 @@ with open("objFile.txt", "r") as objFile:
 #         front = fastPareto(gen)
 #         remaining = [p for p in gen if p not in front]
 mds = MDS(n_components=2, random_state=0, normalized_stress="auto")
+# fit mds on each generation together with its neighbours and keep only that generation's rows, so the layout doesn't jump about from one generation to the next
 transformedPoints = [mds.fit_transform(points[0] + points[1])[:len(points[0])]]
 for i in range(len(points) - 1):
     transformedPoints.append(mds.fit_transform(points[i] + points[i - 1] + points[i + 1])[:len(points[0])])

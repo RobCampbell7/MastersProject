@@ -106,6 +106,7 @@ with open("objFile.txt", "r") as objFile:
 #         front = fastPareto(gen)
 #         remaining = [p for p in gen if p not in front]
 mds = MDS(n_components=2, random_state=0, normalized_stress="auto") 
+# mds on each generation by itself, so the axes aren't comparable between generations
 transformedPoints = [mds.fit_transform(points[i]) for i in range(len(points))]
 
 data = {

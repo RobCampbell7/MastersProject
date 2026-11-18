@@ -2,6 +2,7 @@ from math import inf
 from population import *
 from solution import randTSP
 
+# highest number of times any one item appears in lst
 def repeatCount(lst):
     count = 0
 
@@ -24,6 +25,7 @@ if __name__=="__main__":
     for i in range(iterationNo):
         newHV = p.hypervolume()
         print(newHV)
+        # the hypervolume should never drop with elitism, so if it does check whether any of the old front went missing
         if newHV < prevHV:
             missing = []
             newFront = [s.perm for s in p.paretoFront()]

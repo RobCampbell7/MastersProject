@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 
+# minimisation, so s1 dominates if it is no worse anywhere and not identical
 def dominates(s1, s2):
     """
     Returns True iff s1 dominates s2
@@ -48,9 +49,11 @@ for d in range(len(dimensions)):
         fileName = str(dimensions[d]) + "d" + str(cityNos[c]) + "c"
         print(fileName + " in progress")
         df = pd.read_csv(fileName + ".csv")
+        # two pca axes against generation, coloured by the largest objective
         fig = px.scatter_3d(df, x="PC1", y="PC2", z="Iteration", color="maxF")
         fig.update_traces(marker_size=2.5, opacity=0.9)
         fig.update_layout(width=1200, height = 1200)
+        # same plot saved from four camera angles (p1 to p4), write_image needs kaleido
         fig.update_layout(scene_camera_eye=dict(x=0.0, y=2.0, z=0.1))
         pio.write_image(fig, fileName + 'p1.png', scale=5, width=800, height=600)
         fig.update_layout(scene_camera_eye=dict(x=2.0, y=0.1, z=0.1))

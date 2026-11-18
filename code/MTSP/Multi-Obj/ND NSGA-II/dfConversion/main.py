@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 
+# minimisation, so s1 dominates if it is no worse anywhere and not identical
 def dominates(s1, s2):
     """
     Returns True iff s1 dominates s2
@@ -54,6 +55,7 @@ for d in range(len(dimensions)):
                 history.append([])
                 for s in li.split(":"):
                     permStr, coordStr = s.split("-")
+                    # tack the generation number on the end of each objective tuple
                     coord = eval(coordStr.replace(")", ", " + str(i) + ")"))
                     history[-1].append(coord)
         data = {
@@ -66,6 +68,7 @@ for d in range(len(dimensions)):
         for i in range(dimensions[d]):
             data["f" + str(i + 1)] = []
 
+        # fit the pca once on every unique point from all generations so the axes are the same for each generation
         pca = PCA(n_components=2)
         pca = pca.fit(np.asarray(removeRepeats(flatten(history))))
         for i in range(len(history)):
@@ -76,6 +79,7 @@ for d in range(len(dimensions)):
                 for k in range(dimensions[d]):
                     data["f" + str(k + 1)].append(history[i][j][k])
 
+                # which objective is largest for this solution (1 based), used to colour the plots
                 data["maxF"].append(1 + max((range(len(history[i][j]))), key = lambda f : history[i][j][f]))
                 data["Iteration"].append(i)
                 data["PC1"].append(transformedGen[j][0])

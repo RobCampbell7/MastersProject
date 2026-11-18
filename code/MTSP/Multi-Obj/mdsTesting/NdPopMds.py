@@ -29,6 +29,7 @@ def randTSP(cityNo, dim, lower=0, higher=100):
 
 def obj(p, d):
     dim = len(d[0, p[0]])
+    # city 0 is the fixed start and isn't in the perm, so the tour is 0 -> p[0] -> ... -> p[-1] -> 0
     f = [d[(0, p[0])][i] + d[(0, p[-1])][i] for i in range(dim)]
     
     for i in range(1, len(p)):
@@ -45,6 +46,7 @@ def randomPoints(n, cityNo, dim, lower=0, higher=100):
 
     return objPoints
 
+# same as 3dPopMds but with any number of objectives (4 here), squashed down to 2d with mds
 x = np.array(randomPoints(1000, 10, 4, 0, 200))
 mds = MDS(n_components=2, random_state=0, normalized_stress="auto") 
   

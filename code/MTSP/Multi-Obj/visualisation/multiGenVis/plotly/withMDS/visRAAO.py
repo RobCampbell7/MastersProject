@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.express as px
 
+# plots a reduced objective file saved earlier, two mds axes against generation
 df = pd.read_csv("reducedObj3.csv")
 # df = pd.DataFrame(data)
 

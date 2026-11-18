@@ -24,6 +24,7 @@ def randTSP(cityNo, lower=0, higher=100):
     return d
 
 def obj(p, d):
+        # city 0 is the fixed start and isn't in the perm, so the tour is 0 -> p[0] -> ... -> p[-1] -> 0
         f1 = d[(0, p[0])][0] + d[(0, p[-1])][0]
         f2 = d[(0, p[0])][1] + d[(0, p[-1])][1]
         
@@ -51,6 +52,7 @@ def randomPoints(n, cityNo, lower=0, higher = 100):
 
 def enumerateObj(cityNo, lower=0, higher = 100):
     graph = randTSP(cityNo, lower, higher)
+    # every tour starting at city 0, p[0] < p[-1] skips the reversed copy of each one
     return [obj(p, graph) for p in permutations(range(1, cityNo)) if p[0] < p[-1]]
 
 def dominates(s1, s2):
@@ -82,6 +84,7 @@ saveFigure = True
 noOfPoints = 10000 # Ignore if fullEnumeration equals true
 cityNo = 9
 
+# full enumeration is (cityNo - 1)!/2 tours, fine for 9 cities but blows up fast
 if fullEnumeration == True:
     allPoints = enumerateObj(cityNo, 1, 200)
     # with open(repr(cityNo) + "cities.txt", "w") as f:

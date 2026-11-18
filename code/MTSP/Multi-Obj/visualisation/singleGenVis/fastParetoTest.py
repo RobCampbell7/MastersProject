@@ -16,6 +16,7 @@ def oldFastPareto(pop):
     
     return front
 
+# same start, but collects the survivors first and runs the full pareto check once at the end
 def newFastPareto(pop):
     front = paretoFront(quickhull(pop))
     pseudoFront = []
@@ -33,5 +34,6 @@ def newFastPareto(pop):
 
     return front + paretoFront(pseudoFront)
     
+# times both on 10 lots of 100000 random normal points
 print("old time : " + str(timeit.timeit("oldFastPareto(createNormalPoints(100000))", number = 10, setup="from __main__ import oldFastPareto, createNormalPoints")))
 print("new time : " + str(timeit.timeit("newFastPareto(createNormalPoints(100000))", number = 10, setup="from __main__ import newFastPareto, createNormalPoints")))

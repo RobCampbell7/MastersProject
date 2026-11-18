@@ -29,6 +29,7 @@ def randTSP(cityNo, lower=0, higher=100):
     return d
 
 def obj(p, d):
+    # city 0 is the fixed start and isn't in the perm, so the tour is 0 -> p[0] -> ... -> p[-1] -> 0
     f1 = d[(0, p[0])][0] + d[(0, p[-1])][0]
     f2 = d[(0, p[0])][1] + d[(0, p[-1])][1]
     f3 = d[(0, p[0])][2] + d[(0, p[-1])][2]
@@ -49,6 +50,7 @@ def randomPoints(n, cityNo, lower=0, higher = 100):
 
     return objPoints
 
+# objective vectors of random tours on a 10 city problem, squashed down to 2d with mds
 x = np.array(randomPoints(10000, 10, 0, 200))
 mds = MDS(n_components=2, random_state=0, normalized_stress="auto") 
   

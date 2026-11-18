@@ -4,6 +4,7 @@ import pandas as pd
 
 filename = "3d30c05m"
 
+# redraws the four images from a dataframe saved earlier
 df = pd.read_csv(filename + ".csv")
 
 fig = px.scatter_3d(df, x="PC1", y="PC2", z="Iteration", color="maxF")

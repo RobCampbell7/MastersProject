@@ -3,6 +3,7 @@ from quickhullAgain import quickhull
 import plotly.express as px
 import numpy as np
 
+# turns a list of points into one list per axis, ready to * into scatter
 def splitCoords(lst):
     splitLst = [[] for i in range(len(lst[0]))]
     for p in lst:
@@ -46,6 +47,7 @@ def paretoFront(pop):
 
     return front
 
+# points on the convex hull are a cheap first guess at the front, then every other point is checked against it
 def fastPareto(pop):
     front = paretoFront(quickhull(pop))
     for i in range(len(pop)):
@@ -57,10 +59,12 @@ def fastPareto(pop):
                     break
 
             if dominated == False:
+                # pop[i] isn't dominated, so it joins the front and kicks out anything it dominates
                 front = [pop[i]] + [front[j] for j in range(len(front)) if not dominates(pop[i], front[j])]
     
     return front
 
+# marks each solution that nothing else in the same generation dominates
 def allocateParetoFlag(popData):
     for i in range(len(popData["Iteration"])):
         dominated = False
@@ -95,6 +99,7 @@ with open("objFile.txt", "r") as objFile:
         for s in li.split(":"):
             permStr, coordStr = s.split("-")
             data["perm"].append(eval(permStr))
+            # tack the generation number on the end of the objective tuple
             coord = eval(coordStr.replace(")", ", " + str(i) + ")"))
             data["f1"].append(coord[0])
             data["f2"].append(coord[1])
@@ -111,6 +116,7 @@ allocateParetoFlag(data)
 
 df = pd.DataFrame(data)
 
+# f1 and f2 against generation, hovering a point shows its perm
 fig = px.scatter_3d(df, x="f1", y="f2", z="Iteration", color="inFront", custom_data="perm")
 fig.update_traces(marker_size=3, opacity=1)
 fig.update_layout(yaxis_range=[0,max(data["f2"])])

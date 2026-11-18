@@ -17,6 +17,7 @@ def getFronts(remaining):
     if len(remaining) < 2:
         return [remaining]
     else:
+        # non-dominated sorting, take off the current front then recurse on whatever is left
         front = []
         for i in range(len(remaining)):
             dominated = False
@@ -65,6 +66,7 @@ def paretoFront(pop):
     
 #     return fronts
 
+# sorting by angle puts a 2d front in order of rising f1 (and falling f2), which the hypervolume sum relies on
 def sortFront(front):
     return sorted(front, key = lambda p : atan2(*p.objPos()))
 
@@ -73,6 +75,7 @@ def assignCrowdingDistances(front):
     for s in front:
         s.crowdingDistance = 0
     
+    # the ends of the front always survive
     front[0].crowdingDistance = front[-1].crowdingDistance = inf
 
     for m in range(2):
@@ -104,6 +107,7 @@ class Population:
     #     self.refPoint = [nadir[0] + epsilon, nadir[1] + epsilon]
 
     def findRefVec(self, epsilon = 10):
+        # ref point for the hypervolume, the total edge weight is past the cost of any tour
         nadir = [epsilon, epsilon]
         for _, (w1, w2) in self.d.items():
             nadir[0] += w1
@@ -121,6 +125,7 @@ class Population:
     def hypervolume(self):
         front = self.paretoFront()
         epsilon = 10 # TEMP - FIX THIS
+        # add up the rectangles between each front point and the ref point, one slice of f2 at a time
         hv = (self.refPoint[0] - front[0].objPos(0)) * (self.refPoint[1] - front[0].objPos(1))
         for i in range(len(front)):
             hv += (self.refPoint[0] - front[i].objPos(0)) * (front[i - 1].objPos(1) - front[i].objPos(1))
@@ -147,6 +152,7 @@ class Population:
         mpSize = int(self.truncRate * self.popSize)
         fronts = getFronts(deepcopy(self.pop))
 
+        # fill the mating pool a whole front at a time, the front that doesn't fit is cut down by crowding distance
         for i in range(len(fronts)):
             remainingMPS = mpSize - len(matingPool)
             if remainingMPS == 0:
@@ -199,5 +205,6 @@ class Population:
                 raise Exception("OH SHIT OH FUCK")
         
         # MERGE OFFSPRING AND OLDPOP, PICK BEST ( EVOLUTIONARY SELECTION )
+        # elitist step, parents and offspring compete together for the next generation
         self.pop = deepcopy(self.evolutionarySelection(self.pop + offspring))
         self.iterNo += 1

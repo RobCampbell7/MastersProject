@@ -60,9 +60,11 @@ with open("objFile.txt", "r") as objFile:
         points.append([])
         for s in li.split(":"):
             permStr, coordStr = s.split("-")
+            # tack the generation number on the end of each objective tuple
             coord = eval(coordStr.replace(")", ", " + str(i) + ")"))
             points[-1].append(coord)
 
+# fit on every generation at once then transform each one, so all generations share the same two axes
 pca = PCA(n_components=2) # OTHER ARGUMENTS TOO PROBABLY
 pca.fit(np.asarray(flatten(points)))
 transformedPoints = [pca.transform(np.asarray(points[i])) for i in range(len(points))]

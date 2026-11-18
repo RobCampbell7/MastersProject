@@ -9,6 +9,7 @@ from pymoo.operators.mutation.inversion import InversionMutation
 from pymoo.termination.default import DefaultSingleObjectiveTermination
 from pymoo.problems.single.traveling_salesman import visualize
 
+# single objective tsp in pymoo, kept as a comparison
 class StartFromZeroRepair(Repair):
 
     def _do(self, problem, X, **kwargs):
@@ -16,6 +17,7 @@ class StartFromZeroRepair(Repair):
 
         for k in range(len(X)):
             i = I[k]
+            # rotate each tour so it starts at city 0, the tour itself doesn't change
             X[k] = np.concatenate([X[k, i:], X[k, :i]])
 
         return X

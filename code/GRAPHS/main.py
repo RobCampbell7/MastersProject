@@ -18,6 +18,7 @@ p = Population(cityNo, dimensions, graph, populationSize, mutationRate, truncati
 p.initialise()
 
 print("optimisation began")
+# objective vectors of every generation, starting with the random one
 history = []
 history.append([(tuple(s.objPos())) for s in p.pop])
 for i in range(iterationNo):
@@ -29,6 +30,7 @@ history.append([(tuple(s.objPos())) for s in p.pop])
 
 print("optimisation complete")
 
+# fit the pca once on every unique point from all generations so the axes are the same for each generation
 pca = PCA(n_components=2)
 pca = pca.fit(np.asarray(removeRepeats(flatten(history))))
 
@@ -50,6 +52,7 @@ for i in range(len(history)):
         for k in range(dimensions):
             data["f" + str(k + 1)].append(history[i][j][k])
 
+        # which objective is largest for this solution (1 based), used to colour the plots
         data["maxF"].append(1 + max((range(len(history[i][j]))), key = lambda f : history[i][j][f]))
         data["Iteration"].append(i)
         data["PC1"].append(transformedGen[j][0])
@@ -64,6 +67,7 @@ fig.update_layout(width=1200, height = 1200)
 
 print("creating images of plots")
 filename = str(dimensions) + "d" + str(cityNo) + "c"
+# same plot saved from four camera angles (1p to 4p), write_image needs kaleido
 fig.update_layout(scene_camera_eye=dict(x=0.0, y=2.0, z=0.1))
 pio.write_image(fig, filename + '1p.png', scale=5, width=800, height=600)
 fig.update_layout(scene_camera_eye=dict(x=2.0, y=0.1, z=0.1))

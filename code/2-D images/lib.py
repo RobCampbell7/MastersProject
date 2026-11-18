@@ -6,12 +6,16 @@ import plotly.io as pio
 import numpy as np
 import random
 
+# the solution and population code from ND NSGA-II gathered into one file, plus a few helpers for the plots
+
+# edges are stored once with the smaller city first, so (a, b) and (b, a) hit the same key
 def arrange(a, b):
     if a < b:
         return (a, b)
     else:
         return (b, a)
 
+# fully connected graph, each edge has dim weights, one per objective
 def randTSP(cityNo, dim, lower=0, higher=100):
     d = {}
     for i in range(cityNo):
@@ -22,12 +26,14 @@ def randTSP(cityNo, dim, lower=0, higher=100):
 
 def crossover(p0, p1):
     # subSize = random.randint(len(p0) / 4, len (p0) / 2)
+    # child keeps a block of p0 in the same place, the rest comes from p1 in order
     subSize = ceil(len(p0)/2)
 
     k = random.randint(0, len(p0) - subSize)
     s0 = p0[k : k + subSize]
     s1 = p1[k : k + subSize]
 
+    # cities in p1's block that p0's block doesn't have, used to fill the spots where p1 clashes with the block
     s = [s1[i] for i in range(subSize) if s1[i] not in s0]
 
     # This messy list comprehension encapsulates the following functionality in the commented for
@@ -49,12 +55,14 @@ def crossover(p0, p1):
     #         p2.append(p1[i])
     return p2
 
+# cache of objective vectors by perm, perms are tuples so they work as keys
 objectiveHash = {}
 def objPos(p, d):
     try:
         return objectiveHash[p]
     except KeyError:
         dim = len(d[0, p[0]])
+        # city 0 is the fixed start and isn't in the perm, so the tour is 0 -> p[0] -> ... -> p[-1] -> 0
         f = [d[(0, p[0])][i] + d[(0, p[-1])][i] for i in range(dim)]
 
         for i in range(1, len(p)):
@@ -63,6 +71,7 @@ def objPos(p, d):
         objectiveHash[p] = f
     return f
 
+# swap two random cities
 def mutate(p0):
     i = random.randint(0, len(p0) - 1)
     j = random.choice([j for j in range(len(p0)) if j != i])
@@ -105,6 +114,7 @@ class Solution:
 
     def rand(self):
         self.perm = tuple(random.sample(range(1, self.cityNo), self.cityNo - 1))
+        # a tour and its reverse cost the same, so only keep one direction
         if self.perm[0] > self.perm[-1]:
             self.perm = tuple(reversed(self.perm))
 
@@ -142,6 +152,7 @@ def getFronts(remaining):
     if len(remaining) < 2:
         return [remaining]
     else:
+        # non-dominated sorting, take off the current front then recurse on whatever is left
         front = []
         for i in range(len(remaining)):
             dominated = False
@@ -165,6 +176,7 @@ def assignCrowdingDistances(front, dim):
     for m in range(dim):
         front = sorted(front, key = lambda s : s.objPos(m))
 
+        # the ends of the front on each objective always survive
         front[0].crowdingDistance = inf
         fmin = front[0].objPos(m)
         front[-1].crowdingDistance = inf
@@ -214,6 +226,7 @@ class Population:
         mpSize = int(self.truncRate * self.popSize)
         fronts = getFronts(deepcopy(self.pop))
 
+        # fill the mating pool a whole front at a time, the front that doesn't fit is cut down by crowding distance
         for i in range(len(fronts)):
             remainingMPS = mpSize - len(matingPool)
             if remainingMPS == 0:
@@ -266,5 +279,6 @@ class Population:
                 raise Exception("OH SHIT OH FUCK")
 
         # MERGE OFFSPRING AND OLDPOP, PICK BEST ( EVOLUTIONARY SELECTION )
+        # elitist step, parents and offspring compete together for the next generation
         self.pop = deepcopy(self.evolutionarySelection(self.pop + offspring))
         self.iterNo += 1

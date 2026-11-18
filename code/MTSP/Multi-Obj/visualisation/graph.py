@@ -1,5 +1,6 @@
 from math import inf
 
+# recursive insert so nodes stays sorted
 def insert(lst, item):
     if len(lst) == 0 or lst[-1] <= item:
         return lst + [item]

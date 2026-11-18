@@ -2,6 +2,7 @@ from math import inf
 from population import *
 from solution import randTSP, objPos
 
+# same as tests.py but only the 3 objective runs, logging every generation to <name>.txt for dfConversion
 print("3d20c in progress")
 cityNo = 20
 dimensions = 3
@@ -14,9 +15,11 @@ objFile = open("3d20c.txt", "w")
 prevPop = deepcopy(p)
 prevHV = 0
 for i in range(iterationNo):
+    # one line per generation, solutions split by : and each one written as perm-objectives
     objFile.write(":".join([str(s.perm) + "-" + str(tuple(s.objPos())) for s in p.pop]) + "\n")
     p.iterate()
 
+# one more step after the loop so the last line logged is the final generation
 p.iterate()
 
 objFile.write(":".join([str(s.perm) + "-" + str(tuple(s.objPos())) for s in p.pop]) + "\n")

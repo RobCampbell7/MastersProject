@@ -100,6 +100,7 @@ with open("objFile.txt", "r") as objFile:
 #         front = fastPareto(gen)
 #         remaining = [p for p in gen if p not in front]
 
+# mds on every generation at once, so they all share one embedding
 flatPoints = []
 for row in points:
     flatPoints.extend(row)

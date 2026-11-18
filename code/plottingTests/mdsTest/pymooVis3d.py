@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 ref_dirs = get_reference_directions("das-dennis", 5, n_partitions=12)
 
+# known 5 objective pareto front from pymoo, squashed down with mds to see what a front looks like in fewer dimensions
 pf = get_problem("dtlz3", n_obj=5).pareto_front(ref_dirs)
 print(pf)
 mds = MDS(n_components=3, random_state=0, normalized_stress="auto") 

@@ -19,6 +19,7 @@ with open("objFile.txt", "r") as objFile:
         points.append([])
         for s in li.split(":"):
             permStr, coordStr = s.split("-")
+            # tack the generation number on the end of each objective tuple
             coord = eval(coordStr.replace(")", ", " + str(i) + ")"))
             points[-1].append(coord)
             # data["f1"].append(coord[0])
@@ -31,6 +32,7 @@ with open("objFile.txt", "r") as objFile:
 #     if i % 1 == 0:# and i < 10:
 #         front = fastPareto(gen)
 #         remaining = [p for p in gen if p not in front]
+# tsne run on each generation by itself, so the layout isn't comparable between generations
 tsne = TSNE(n_components=2, random_state=0, init="pca") 
 transformedPoints = [tsne.fit_transform(np.asarray(points[i])) for i in range(len(points))]
 

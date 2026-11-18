@@ -2,6 +2,7 @@ import plotly.express as px
 import plotly.io as pio
 import pandas as pd
 
+# redraws the images from the csv files main.py saved, without rerunning the optimisation
 df = pd.read_csv("./simple.csv")
 paretodf = pd.read_csv("./pareto.csv")
 

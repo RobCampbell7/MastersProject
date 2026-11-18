@@ -2,6 +2,7 @@ from quickhullAgain import quickhull
 import matplotlib.pyplot as plt
 import numpy as np
 
+# turns a list of points into one list per axis, ready to * into scatter
 def splitCoords(lst):
     splitLst = [[] for i in range(len(lst[0]))]
     for p in lst:
@@ -45,6 +46,7 @@ def paretoFront(pop):
 
     return front
 
+# points on the convex hull are a cheap first guess at the front, then every other point is checked against it
 def fastPareto(pop):
     front = paretoFront(quickhull(pop))
     for i in range(len(pop)):
@@ -56,6 +58,7 @@ def fastPareto(pop):
                     break
 
             if dominated == False:
+                # pop[i] isn't dominated, so it joins the front and kicks out anything it dominates
                 front = [pop[i]] + [front[j] for j in range(len(front)) if not dominates(pop[i], front[j])]
     
     return front
@@ -68,12 +71,14 @@ with open("objFile.txt", "r") as objFile:
     i = -1
     for li in objFile.readlines():
         i += 1
+        # tack the generation number on as a third coordinate so each generation sits at its own height
         points.append([eval(coordStr.replace(")", ", " + str(i) + ")")) for coordStr in li.split(":")])
 
 i = -1
 for gen in points:
     i += 1
     if i % 1 == 0:# and i < 10:
+        # front in red, the rest of the generation in blue
         front = fastPareto(gen)
         remaining = [p for p in gen if p not in front]
         ax.scatter(*splitCoords(front), c="r", marker = ".")

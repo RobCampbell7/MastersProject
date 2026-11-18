@@ -28,6 +28,7 @@ def randTSP(cityNo, lower=0, higher=100):
     return d
 
 def obj(p, d):
+    # city 0 is the fixed start and isn't in the perm, so the tour is 0 -> p[0] -> ... -> p[-1] -> 0
     f1 = d[(0, p[0])][0] + d[(0, p[-1])][0]
     f2 = d[(0, p[0])][1] + d[(0, p[-1])][1]
     f3 = d[(0, p[0])][2] + d[(0, p[-1])][2]
@@ -82,6 +83,7 @@ data = {
     "f3" : [],
     "Iteration" : [],
 }
+# objective log from a 3 objective run, one line per generation
 with open("objFile25.txt", "r") as objFile:
     i = -1
     for li in objFile.readlines():
@@ -95,6 +97,7 @@ with open("objFile25.txt", "r") as objFile:
             data["Iteration"].append(i)
 
 df = pd.DataFrame(data)
+# one frame per generation, axes fixed to the largest values so the frames line up
 fig = px.scatter_3d(df, x="f1", y="f2", z="f3", animation_frame="Iteration",
                     range_x=[0, max(data["f1"])], range_y=[0, max(data["f2"])], range_z=[0, max(data["f3"])])
 fig.update_traces(marker_size=3, opacity=1)

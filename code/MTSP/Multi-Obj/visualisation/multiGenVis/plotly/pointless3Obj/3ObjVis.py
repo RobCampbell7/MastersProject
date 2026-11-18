@@ -20,6 +20,7 @@ def arrange(a, b):
     else:
         return (b, a)
 
+# same as the solution.py version but with three weights per edge
 def randTSP(cityNo, lower=0, higher=100):
     d = {}
     for i in range(cityNo):
@@ -30,6 +31,7 @@ def randTSP(cityNo, lower=0, higher=100):
     return d
 
 def obj(p, d):
+    # city 0 is the fixed start and isn't in the perm, so the tour is 0 -> p[0] -> ... -> p[-1] -> 0
     f1 = d[(0, p[0])][0] + d[(0, p[-1])][0]
     f2 = d[(0, p[0])][1] + d[(0, p[-1])][1]
     f3 = d[(0, p[0])][2] + d[(0, p[-1])][2]
@@ -62,6 +64,7 @@ def randomPoints(n, cityNo, lower=0, higher = 100):
 
 def enumerateObj(cityNo, lower=0, higher = 100):
     graph = randTSP(cityNo, lower, higher)
+    # every tour starting at city 0, p[0] < p[-1] skips the reversed copy of each one
     return [obj(p, graph) for p in permutations(range(1, cityNo)) if p[0] < p[-1]]
 
 def dominates(s1, s2):

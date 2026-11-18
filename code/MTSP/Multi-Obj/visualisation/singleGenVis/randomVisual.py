@@ -140,6 +140,7 @@ def paretoFront(pop):
 
     return front
 
+# hull points are a cheap first guess at the front, then every other point is checked against it
 def fastPareto(pop):
     front = paretoFront(quickhull(pop))
     defIndex = len(front)
@@ -152,6 +153,7 @@ def fastPareto(pop):
                     break
 
             if dominated == False:
+                # the original hull front is kept as is, only points added after it can be knocked out
                 front =  front[:defIndex] + [front[j] for j in range(defIndex, len(front)) if not dominates(pop[i], front[j])] + [pop[i]]
     
     return front
@@ -164,6 +166,7 @@ if __name__ == "__main__":
     front1 = paretoFront(allPoints)
     front2 = fastPareto(allPoints)
     
+    # points the fast version thinks are on the front but the full check doesn't, plotted in blue
     extras = [p for p in front2 if p not in front1]
     # if extras == []:
     #     print("AAAAAGGGGHHHHH")
